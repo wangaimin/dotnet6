@@ -2,6 +2,8 @@ using CommonDAL.Context;
 using CommonDAL.Interfaces;
 using CommonDAL.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace CommonDAL.Impl;
 
@@ -9,10 +11,16 @@ public class EfCoreSystemUserRepository : IEfCoreSystemUserRepository
 {
 
     private readonly AuthCenterContext context;  
+    private readonly IConfiguration configuration;
+    private readonly ILogger logger;
 
-    public EfCoreSystemUserRepository(AuthCenterContext authCenterContext)
+
+    public EfCoreSystemUserRepository(IConfiguration configuration, AuthCenterContext context,ILogger<EfCoreSystemUserRepository> logger
+    )
     {
-        context = authCenterContext;
+        this.configuration = configuration;
+        this.context = context;
+        this.logger = logger;
     }
 
     public async Task<int> AddAsync(SystemUser systemUser)
@@ -29,6 +37,9 @@ public class EfCoreSystemUserRepository : IEfCoreSystemUserRepository
 
     public async Task<List<SystemUser>> GetAllAsync()
     {
-        return await context.SystemUser.OrderByDescending(m => m.SysNo).Take(10).ToListAsync();
+        var defaultPageSizeStr=configuration["DefaultPageSize"];
+        logger.LogInformation(defaultPageSizeStr);
+        int.TryParse(defaultPageSizeStr, out int defaultPageSize);
+        return await context.SystemUser.OrderByDescending(m => m.SysNo).Take(defaultPageSize).ToListAsync();
     }
 }

@@ -3,6 +3,7 @@ using biz_shared.Impl;
 using CommonDAL.Context;
 using CommonDAL.Impl;
 using CommonDAL.Interfaces;
+using CoreModel;
 using CoreService;
 using CoreService.Impl;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +18,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//注册服务
 builder.Services.AddDbContext<AuthCenterContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AuthCenterContext")));
 builder.Services.AddScoped<IEfCoreSystemUserRepository,EfCoreSystemUserRepository>();
 builder.Services.AddScoped<ISystemUserDomainService,SystemUserDomainServiceImpl>();
 builder.Services.AddScoped<ISystemUserBizService,SystemUserBizServiceImpl>();
+
+
+//注册配置option
+builder.Services.Configure<DefaultSystemUserOption>(builder.Configuration.GetSection("DefaultSystemUser"));
 
 
 var app = builder.Build();

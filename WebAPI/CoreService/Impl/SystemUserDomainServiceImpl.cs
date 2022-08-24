@@ -1,18 +1,40 @@
-using CommonDAL.Impl;
+
 using CommonDAL.Interfaces;
 using CommonDAL.Model;
 using CoreModel;
-
+using Microsoft.Extensions.Options;
 namespace CoreService.Impl;
 
 public class SystemUserDomainServiceImpl : ISystemUserDomainService
 {
     private readonly IEfCoreSystemUserRepository _systemUserRepository;
+    //取结构化的配置信息
+    /*
+     * 取结构化的配置信息
+     * IOptions:配置不会热更新
+     * IOptionsSnapshot：配置热更新
+     * IOptionsMonitor:配置热更新
+     */
+    private readonly DefaultSystemUserOption defaultSystemUserOption;
 
-    public SystemUserDomainServiceImpl(IEfCoreSystemUserRepository efCoreSystemUserRepository)
+    public SystemUserDomainServiceImpl(IEfCoreSystemUserRepository efCoreSystemUserRepository,IOptions<DefaultSystemUserOption> options)
     {
         _systemUserRepository = efCoreSystemUserRepository;
+        defaultSystemUserOption = options.Value;
     }
+    #region 热更新配置
+    /*
+    public SystemUserDomainServiceImpl(IEfCoreSystemUserRepository efCoreSystemUserRepository,IOptionsSnapshot<DefaultSystemUserOption> options)
+    {
+        _systemUserRepository = efCoreSystemUserRepository;
+        defaultSystemUserOption = options.Value;
+    }
+    public SystemUserDomainServiceImpl(IEfCoreSystemUserRepository efCoreSystemUserRepository,IOptionsMonitor<DefaultSystemUserOption> options)
+    {
+        _systemUserRepository = efCoreSystemUserRepository;
+        defaultSystemUserOption = options.CurrentValue;
+    }*/
+    #endregion
 
     public async Task<int> SaveAsync(SystemUserModel systemUserModel)
     {
@@ -59,12 +81,18 @@ public class SystemUserDomainServiceImpl : ISystemUserDomainService
     public async Task<List<SystemUserModel>> GetAllAsync()
     {
         var systemUsers = await _systemUserRepository.GetAllAsync();
-        return systemUsers.Select(systemUser => new SystemUserModel()
+        var systemUserModels= systemUsers.Select(systemUser => new SystemUserModel()
         {
             SysNo = systemUser.SysNo, 
             CellPhone = systemUser.CellPhone, 
             CommonStatus = systemUser.CommonStatus,
             LoginName = systemUser.LoginName
         }).ToList();
+        systemUserModels.Add(new SystemUserModel()
+        {
+             LoginName = defaultSystemUserOption.UserName,
+             LoginPassword = defaultSystemUserOption.PassWord
+        });
+        return systemUserModels;
     }
 }
