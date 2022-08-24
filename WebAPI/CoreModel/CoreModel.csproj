@@ -2,14 +2,12 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <RootNamespace>biz_shared</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\CommonServiceFacade\CommonServiceFacade.csproj" />
-      <ProjectReference Include="..\CoreService\CoreService.csproj" />
     </ItemGroup>
 
 </Project>

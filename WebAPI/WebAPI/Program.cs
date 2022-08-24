@@ -1,5 +1,10 @@
+using biz_shared;
+using biz_shared.Impl;
 using CommonDAL.Context;
-using CommonDAL.Model;
+using CommonDAL.Impl;
+using CommonDAL.Interfaces;
+using CoreService;
+using CoreService.Impl;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -14,10 +19,14 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AuthCenterContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AuthCenterContext")));
+builder.Services.AddScoped<IEfCoreSystemUserRepository,EfCoreSystemUserRepository>();
+builder.Services.AddScoped<ISystemUserDomainService,SystemUserDomainServiceImpl>();
+builder.Services.AddScoped<ISystemUserBizService,SystemUserBizServiceImpl>();
+
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+/*using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<AuthCenterContext>();
@@ -37,7 +46,7 @@ using (var scope = app.Services.CreateScope())
     };
     context.SystemUser.Add(systemUser);
     context.SaveChanges();
-}
+}*/
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
