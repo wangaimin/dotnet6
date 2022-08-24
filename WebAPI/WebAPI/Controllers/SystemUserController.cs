@@ -1,6 +1,4 @@
-using System.Reflection.Metadata.Ecma335;
 using biz_shared;
-using biz_shared.Impl;
 using biz_shared.Request;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Response;
@@ -8,7 +6,7 @@ using WebAPI.Response;
 namespace WebAPI.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("[controller]/[action]")]
 public class SystemUserController : ControllerBase
 {
     private readonly ISystemUserBizService _systemUserBizService;

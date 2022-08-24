@@ -1,5 +1,5 @@
 using CommonServiceFacade.Enums;
-using Microsoft.OpenApi.Extensions;
+using CommonUtil;
 
 namespace WebAPI.Response;
 
@@ -20,7 +20,7 @@ public class SystemUserVO
     public string CommonStatusStr {
         get
         {
-            return CommonStatus.GetDisplayName();
+            return CommonStatus.GetDescription();
         }
     }
 

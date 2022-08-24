@@ -14,6 +14,7 @@
     <ItemGroup>
       <ProjectReference Include="..\BizShared\BizShared.csproj" />
       <ProjectReference Include="..\CommonDal\CommonDal.csproj" />
+      <ProjectReference Include="..\CommonUtil\CommonUtil.csproj" />
     </ItemGroup>
 
 </Project>
