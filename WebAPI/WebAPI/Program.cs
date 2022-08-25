@@ -7,6 +7,9 @@ using CoreModel;
 using CoreService;
 using CoreService.Impl;
 using Microsoft.EntityFrameworkCore;
+using Com.Ctrip.Framework.Apollo;
+
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,34 +28,15 @@ builder.Services.AddScoped<IEfCoreSystemUserRepository,EfCoreSystemUserRepositor
 builder.Services.AddScoped<ISystemUserDomainService,SystemUserDomainServiceImpl>();
 builder.Services.AddScoped<ISystemUserBizService,SystemUserBizServiceImpl>();
 
-
 //注册配置option
 builder.Services.Configure<DefaultSystemUserOption>(builder.Configuration.GetSection("DefaultSystemUser"));
 
+//注册Apollo
+builder.Host.ConfigureAppConfiguration(hostBuilder=>hostBuilder.AddApollo(hostBuilder.Build().GetSection("apollo")));
+
+
 
 var app = builder.Build();
-
-/*using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<AuthCenterContext>();
-    var systemUser = new SystemUser()
-    {
-        LoginPassword = "111",
-        InDate = DateTime.Now,
-        EditDate = DateTime.Now,
-        InUserSysNo = 1,
-        InUserName = "Gene",
-        LoginName = "Gene",
-        Email = "123@qq.com",
-        EditUserName = "Gene",
-        EditUserSysNo = 0,
-        UserFullName = "test",
-        CellPhone = "13566666666"
-    };
-    context.SystemUser.Add(systemUser);
-    context.SaveChanges();
-}*/
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

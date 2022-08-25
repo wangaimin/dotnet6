@@ -10,10 +10,13 @@ namespace WebAPI.Controllers;
 public class SystemUserController : ControllerBase
 {
     private readonly ISystemUserBizService _systemUserBizService;
+    private readonly IConfiguration _configuration;
+    
 
-    public SystemUserController(ISystemUserBizService systemUserBizService)
+    public SystemUserController(ISystemUserBizService systemUserBizService,IConfiguration configuration)
     {
         _systemUserBizService = systemUserBizService;
+        _configuration = configuration;
     }
 
     [HttpPost(Name = "保存用户信息")]
@@ -34,5 +37,13 @@ public class SystemUserController : ControllerBase
             CellPhone = m.CellPhone,
             CommonStatus = m.CommonStatus
         }).ToList();
+    }
+
+    [HttpGet(Name="获取Apollo配置")]
+    public string GetApolloConfig()
+    {
+        var defaultValidationCodeExpireMins=_configuration["DefaultValidationCodeExpireMins"];
+        var connStr=_configuration["AuthCenterDB:ConnectionString:Write"];
+        return $"defaultValidationCodeExpireMins:{defaultValidationCodeExpireMins},connstr:{connStr}";
     }
 }
